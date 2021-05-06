@@ -13,9 +13,9 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const PORT = 5000 || process.env.PORT;
 dotenv.config();
-// function replace(str) {
-//     return str.split("").map(char => "_ ").join("");
-// }
+function replace(str) {
+    return str.split("").map(char => "_ ").join("");
+}
 /*
     Calculate score of the user according to coordinates input
 */
@@ -129,7 +129,7 @@ run().catch(console.dir).then(() => {
                         console.log(rooms["room-" + roomno])
                         //  io.sockets.in("room-"+roomno).emit("newFact",rooms["room-"+roomno].currentFact);
                         io.sockets.in("room-" + roomno).emit('updates', {
-                            city: rooms["room-" + roomno].city,
+                            city: replace(rooms["room-" + roomno].city),
                             currentFact: rooms["room-" + roomno].currentFact,
                             round: rooms["room-" + roomno].round,
                             timer: rooms["room-" + roomno].timer
@@ -170,7 +170,7 @@ run().catch(console.dir).then(() => {
         }
         else {
             io.sockets.in("room-" + roomno).emit('updates', {
-                city: rooms["room-" + roomno].city,
+                city: replace(rooms["room-" + roomno].city),
                 currentFact: rooms["room-" + roomno].currentFact,
                 round: rooms["room-" + roomno].round,
                 timer: rooms["room-" + roomno].timer
