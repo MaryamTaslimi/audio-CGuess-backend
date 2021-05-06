@@ -14,7 +14,7 @@ const dotenv = require('dotenv');
 const PORT = 5000 || process.env.PORT;
 dotenv.config();
 function replace(str) {
-    return str.split("").map(char => "_ ").join("");
+    return str.split("").map(char => " ").join("");
 }
 /*
     Calculate score of the user according to coordinates input
