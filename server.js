@@ -51,11 +51,9 @@ async function run() {
         const database = client.db('CguessDB');
         const collection = database.collection('Cities');
 
-        // // Query for a movie that has the title 'Back to the Future'
-        const query = { name: 'New York' };
         const city = await collection.find().toArray();
         dbdata = city;
-
+        
     } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
@@ -64,14 +62,15 @@ async function run() {
 run().catch(console.dir).then(() => {
 
     var rooms = []
-
-    var roomno = uuidv4();
+    var roomno;
+    // var roomno = uuidv4();
     io.on('connection', function (socket) {
 
-        //Increase roomno 2 clients are present in a room.
-        if (io.nsps['/'].adapter.rooms["room-" + roomno] && io.nsps['/'].adapter.rooms["room-" + roomno].length > 5) roomno = uuidv4();
-        socket.join("room-" + roomno);
-        socket.roomKey = roomno;
+        if (io.nsps['/'].adapter.rooms["room-" + roomno] && io.nsps['/'].adapter.rooms["room-" + roomno].length > 5) roomno = "1234567891";
+        
+        roomno = socket.handshake.query.key;
+        socket.join("room-" + roomno);   
+        socket.roomKey = roomno;     
         io.sockets.in("room-" + roomno).emit('connected', true);
 
         function countDown() {
