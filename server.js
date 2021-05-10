@@ -219,7 +219,7 @@ run().catch(console.dir).then(() => {
                 let topush = true;
                 if (curr_score > 0) {
                     io.sockets.to("room-" + roomno).emit('newmsg', {
-                        message: socket.playerName + ' chose the correct ans!!',
+                        message: socket.playerName + ' chose the correct answer!',
                         user: 'System'
                     });
                     //remove marker from array
