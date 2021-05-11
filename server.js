@@ -66,7 +66,7 @@ run().catch(console.dir).then(() => {
     // var roomno = uuidv4();
     io.on('connection', function (socket) {
 
-        if (io.nsps['/'].adapter.rooms["room-" + roomno] && io.nsps['/'].adapter.rooms["room-" + roomno].length > 5) roomno = "1234567891";
+        if (io.nsps['/'].adapter.rooms["room-" + roomno] && io.nsps['/'].adapter.rooms["room-" + roomno].length > 30) roomno = "1234567891";
         
         roomno = socket.handshake.query.key;
         socket.join("room-" + roomno);   
@@ -97,14 +97,14 @@ run().catch(console.dir).then(() => {
                         rooms["room-" + roomno].update = [];
                         //Game finished
                         if (rooms["room-" + roomno].round === 5) {
-                            try {
-                                delete rooms["room-" + socket.roomKey];
-                            } catch (err) {
-                                console.log("Room deleted already")
-                            }
+                            // try {
+                            //     delete rooms["room-" + socket.roomKey];
+                            // } catch (err) {
+                            //     console.log("Room deleted already")
+                            // }
                             io.sockets.in("room-" + roomno).emit('showresults', true);
-                            socket.disconnect();
-                            roomno = uuidv4();
+                            // socket.disconnect();
+                            // roomno = uuidv4();
                             return;
                         }
 
@@ -192,6 +192,26 @@ run().catch(console.dir).then(() => {
             io.sockets.in("room-" + roomno).emit('scores', rooms["room-" + roomno].scores);
             console.log(rooms)
         });
+
+        socket.on('restart', function (data) {
+            io.sockets.to("room-"+roomno).emit('hideothermodals',{})
+            rooms["room-" + socket.roomKey].timer = 0;
+            rooms["room-" + socket.roomKey].round = 0;
+
+            let score_arr = rooms["room-" + roomno].scores;
+            score_arr.forEach((dat , index) => {
+            dat.score = 0;
+            score_arr[index].score = 0;
+            console.log(dat);
+            io.sockets.to("room-" + roomno).emit('newscore', {
+                username: dat.name,
+                score: dat.score
+            });
+            rooms["room-" + roomno].update_done.push(socket.playerName);
+            })
+            countDown();
+        });
+
         socket.on('msg', function (data) {
             //Send message to everyone
             console.log(data)
