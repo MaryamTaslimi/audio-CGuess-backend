@@ -75,7 +75,6 @@ run().catch(console.dir).then(() => {
 
         function countDown() {
             try {
-
                 if (rooms["room-" + roomno]) {
                     if (rooms["room-" + roomno].scores.length === 0) {
                         console.log('Room Empty!!')
@@ -165,7 +164,9 @@ run().catch(console.dir).then(() => {
             };
 
             // io.sockets.in("room-"+roomno).emit('updates',rooms["room-"+roomno]);
+            socket.on('start', function () {
             countDown();
+            });
         }
         else {
             io.sockets.in("room-" + roomno).emit('updates', {
