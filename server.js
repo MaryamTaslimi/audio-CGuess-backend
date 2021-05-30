@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const app = express();
 var cors = require('cors')
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors());
 const server = app.listen(process.env.PORT || 5000, () => console.log(`Running on port: ${PORT}`));
 const io = socketio(server).listen(server);
 const { v4: uuidv4 } = require('uuid')
@@ -19,6 +19,33 @@ function replace(str) {
 /*
     Calculate score of the user according to coordinates input
 */
+
+app.post('/ssrCallBackApi', (request, response) => {
+    var req = JSON.parse(request.body);
+    if (req.lxid == "" || req.starts_on == "") {
+		response.status(203)
+	} else {
+        //here we should write some data to database
+        const date = new Date();
+        var res = [{
+            id = uuidv4(),
+            lxid = req.lxid,
+            created_at = date.toISOString()
+        }];
+        response.status(201).send(JSON.stringify(res))
+    }
+});
+
+app.post('/ssrVerifyApi' , (request, response) => {
+    if(request.query.lxid == null || request.query.sxid == null || request.query.role == null){
+        //show error page here
+    }else{
+        response.redirect('https://wfhomie-geoguesser.herokuapp.com');
+    }
+
+
+})
+
 function score_calculate(lat, long, lat_ans, long_ans, time) {
     let score = 0;
     let dist = Number(Math.ceil(Math.sqrt(((lat - lat_ans) ** 2) + ((long - long_ans) ** 2))));
@@ -35,6 +62,7 @@ function score_calculate(lat, long, lat_ans, long_ans, time) {
 }
 
 const { MongoClient } = require("mongodb");
+const { json } = require('express');
 
 // Replace the uri string with your MongoDB deployment's connection string.
 const uri = "mongodb+srv://test123:test123@cguesscluster.xmwhw.mongodb.net/CguessDB?retryWrites=true&w=majority";
@@ -53,7 +81,7 @@ async function run() {
 
         const city = await collection.find().toArray();
         dbdata = city;
-        
+
     } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
@@ -67,10 +95,10 @@ run().catch(console.dir).then(() => {
     io.on('connection', function (socket) {
 
         if (io.nsps['/'].adapter.rooms["room-" + roomno] && io.nsps['/'].adapter.rooms["room-" + roomno].length > 30) roomno = "1234567891";
-        
+
         roomno = socket.handshake.query.key;
-        socket.join("room-" + roomno);   
-        socket.roomKey = roomno;     
+        socket.join("room-" + roomno);
+        socket.roomKey = roomno;
         io.sockets.in("room-" + roomno).emit('connected', true);
 
         function countDown() {
@@ -165,7 +193,7 @@ run().catch(console.dir).then(() => {
 
             // io.sockets.in("room-"+roomno).emit('updates',rooms["room-"+roomno]);
             socket.on('start', function () {
-            countDown();
+                countDown();
             });
         }
         else {
@@ -195,20 +223,20 @@ run().catch(console.dir).then(() => {
         });
 
         socket.on('restart', function (data) {
-            io.sockets.to("room-"+roomno).emit('hideothermodals',{})
+            io.sockets.to("room-" + roomno).emit('hideothermodals', {})
             rooms["room-" + socket.roomKey].timer = 0;
             rooms["room-" + socket.roomKey].round = 0;
 
             let score_arr = rooms["room-" + roomno].scores;
-            score_arr.forEach((dat , index) => {
-            dat.score = 0;
-            score_arr[index].score = 0;
-            console.log(dat);
-            io.sockets.to("room-" + roomno).emit('newscore', {
-                username: dat.name,
-                score: dat.score
-            });
-            rooms["room-" + roomno].update_done.push(socket.playerName);
+            score_arr.forEach((dat, index) => {
+                dat.score = 0;
+                score_arr[index].score = 0;
+                console.log(dat);
+                io.sockets.to("room-" + roomno).emit('newscore', {
+                    username: dat.name,
+                    score: dat.score
+                });
+                rooms["room-" + roomno].update_done.push(socket.playerName);
             })
             countDown();
         });
