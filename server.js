@@ -33,6 +33,7 @@ app.post('/ssrCallBackApi', (request, response) => {
             created_at = date.toISOString()
         }];
         response.status(201).send(JSON.stringify(res))
+        console.log(JSON.stringify(res))
     }
 });
 
