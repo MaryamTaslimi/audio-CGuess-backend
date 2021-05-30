@@ -40,7 +40,7 @@ app.post('/ssrVerifyApi' , (request, response) => {
     if(request.query.lxid == null || request.query.sxid == null || request.query.role == null){
         //show error page here
     }else{
-        response.redirect('https://wfhomie-geoguesser.herokuapp.com');
+        response.redirect(301,'https://wfhomie-geoguesser.herokuapp.com');
     }
 
 
