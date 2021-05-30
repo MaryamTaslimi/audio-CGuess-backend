@@ -36,7 +36,7 @@ app.post('/ssrCallBackApi', (request, response) => {
     }
 });
 
-app.post('/ssrVerifyApi' , (request, response) => {
+app.get('/ssrVerifyApi' , (request, response) => {
     if(request.query.lxid == null || request.query.sxid == null || request.query.role == null){
         //show error page here
     }else{
