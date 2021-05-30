@@ -28,7 +28,7 @@ app.post('/ssrCallBackApi', (request, response) => {
         //here we should write some data to database
         const date = new Date();
         var res = [{
-            id = uuidv4(),
+            id = "1234567890",
             lxid = req.lxid,
             created_at = date.toISOString()
         }];
