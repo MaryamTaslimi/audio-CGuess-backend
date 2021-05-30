@@ -27,17 +27,17 @@ app.post('/ssrCallBackApi', (request, response) => {
 	} else {
         //here we should write some data to database
         const date = new Date();
-        var res = [{
-            id = "1234567890",
+        var res = {
+            id = uuidv4(),
             lxid = req.lxid,
             created_at = date.toISOString()
-        }];
+        };
         response.status(201).send(JSON.stringify(res))
         console.log(JSON.stringify(res))
     }
 });
 
-app.get('/ssrVerifyApi' , (request, response) => {
+app.post('/ssrVerifyApi' , (request, response) => {
     if(request.query.lxid == null || request.query.sxid == null || request.query.role == null){
         //show error page here
     }else{
