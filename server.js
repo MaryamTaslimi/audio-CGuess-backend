@@ -40,7 +40,7 @@ app.get('/ssrVerifyApi' , (request, response) => {
     if(request.query.lxid == null || request.query.sxid == null || request.query.role == null){
         //show error page here
     }else{
-        response.redirect(301,'https://wfhomie-geoguesser.herokuapp.com/?lxid='+request.query.lxid);
+        response.redirect(301,'https://wfhomie-geoguesser-jitsi-audio.herokuapp.com/?lxid='+request.query.lxid);
     }
 })
 
